@@ -16,7 +16,8 @@ class stack{
 	treenode *treeItem;
 };
 
-//linked list based stack- class to insert the treenode data 
+
+/////////////////      linked list based stack- class to insert the treenode data //////////////////////
 class createstack{
 	public: 
 		stack *stackhead;
@@ -35,13 +36,11 @@ createstack::createstack(){
 }
 void createstack::push(treenode *treenode){
 	//first = stackhead;
-	
 	stack *newnode = new stack();
-	
 	newnode->next = NULL;
 	newnode->pre = NULL;
 	newnode->treeItem =  treenode;
-	cout<< "data inside the treenode : "<< newnode->treeItem->data<<endl;
+	//cout<< "data inside the treenode : "<< newnode->treeItem->data<<endl;
 	
 	if (stackhead->next == NULL){
 		stackhead->next = newnode;
@@ -49,7 +48,7 @@ void createstack::push(treenode *treenode){
 		stkfirst->pre = stackhead;
 	//	cout<<"stackhead->next"<<stackhead->next<<endl;
 		first = newnode->treeItem;
-		cout<<"first"<<first->data<<endl;
+		
 	}
 	else{
 		stack *temp = new stack();
@@ -58,7 +57,6 @@ void createstack::push(treenode *treenode){
 		newnode->pre = stackhead;
 		newnode->next = temp;
 		temp->pre = newnode;
-		cout<<"else block runned successfully "<<endl;
 	}
 	
 }
@@ -67,17 +65,20 @@ void createstack::pop(){
 	stack *temp = new stack;
 	stkfirst = stkfirst->pre;
 	first = stkfirst->treeItem;
-//	delete temp;
+	delete temp;
 }
 
-//class to  create the tree and insert the data 
 
+
+
+////////////////// ///////////   class to  create the tree and insert the data /////////////////////////
 class Binarytree{
 	public:
 		treenode *main;
 		Binarytree();
-		void insertnode(int data);
+		void insertnode();
 		void getdata();
+		void bfs();
 		//define the stack public 
 		createstack *stackobj = new createstack();
 		
@@ -87,26 +88,20 @@ class Binarytree{
 Binarytree::Binarytree(){
 	//create the root node in the binary tree and 
 	main = new treenode();
-	main->data = 20;
+	main->data = NULL;
 	main->left = NULL;
 	main->right = NULL;
 	
-//	currentnode = main;
-
+	//	currentnode = main;
 	//push it into the stack 
-	
 	stackobj->push(main);
+	currentnode= stackobj->first;
 
 	
 }
 
-void Binarytree::insertnode(int data){
-
+void Binarytree::insertnode(){
 	int x;
-	// take the first element in the stack and check it's left and right 
-
-
-	currentnode= stackobj->first;
   while (stackobj->first != NULL)	{
   	cout<<"enter the value to insert at left to thee  :"<<stackobj->first->data<<":::::";
   	cin>>x;
@@ -134,11 +129,37 @@ void Binarytree::insertnode(int data){
 void Binarytree::getdata(){
 	treenode *temp = new treenode();
 	temp = main;
-	cout<<"temp->left->left->data"<<temp->left->data<<endl;
+	cout<<"temp->left->data"<<temp->left->data<<endl;
 }
+
+void Binarytree::bfs(){
+	treenode *temp = main;
+	createstack *stackobj2 = new createstack();
+	stackobj2->push(temp);
+	
+	treenode *currentnode2 = new treenode(); 
+	currentnode2= stackobj2->first;
+	while(currentnode2){
+		cout<<currentnode2->data << " ";
+		if(currentnode2->left){
+			stackobj2->push(currentnode2->left);
+		}
+		if(currentnode2->right){
+			stackobj2->push(currentnode2->right);
+		}
+		stackobj2->pop();
+		currentnode2=stackobj2->first;	
+		
+	}
+	
+	
+}
+	
+	
 main(){
 	cout<<"main function working fine "<<endl ; 
 	Binarytree *obj = new Binarytree();
-	obj->insertnode(10);
-	obj->getdata();
+	obj->insertnode();
+	obj->bfs();
+	//obj->getdata();
 }
