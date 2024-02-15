@@ -1,0 +1,207 @@
+#include "iostream"
+using namespace std ;
+
+//data types defining 
+class treenode{
+	public : 
+	int data; 
+	treenode *left;
+	treenode *right;
+};
+
+class stack{
+	public : 
+	stack *next;
+	stack *pre;
+	treenode *treeItem;
+};
+
+
+/////////////////      linked list based stack- class to insert the treenode data //////////////////////
+class createstack{
+	public: 
+		stack *stackhead;
+		stack *stkfirst;//first inserted node 
+		treenode *first;
+		createstack();
+		void push(treenode *treenode) ; 
+		void pop();
+};
+createstack::createstack(){
+	stackhead = new stack();
+	stackhead->next = NULL;
+	stackhead->pre = NULL;
+	stackhead->treeItem = NULL;
+	
+}
+void createstack::push(treenode *treenode){
+	//first = stackhead;
+	stack *newnode = new stack();
+	newnode->next = NULL;
+	newnode->pre = NULL;
+	newnode->treeItem =  treenode;
+	//cout<< "data inside the treenode : "<< newnode->treeItem->data<<endl;
+	
+	if (stackhead->next == NULL){
+		stackhead->next = newnode;
+		stkfirst = newnode;
+		stkfirst->pre = stackhead;
+	//	cout<<"stackhead->next"<<stackhead->next<<endl;
+		first = newnode->treeItem;
+		
+	}
+	else{
+		stack *temp = new stack();
+		temp = stackhead->next;
+		stackhead->next = newnode;
+		newnode->pre = stackhead;
+		newnode->next = temp;
+		temp->pre = newnode;
+	}
+	
+}
+
+void createstack::pop(){
+	stack *temp = new stack;
+	stkfirst = stkfirst->pre;
+	first = stkfirst->treeItem;
+	delete temp;
+}
+
+
+
+
+////////////////// ///////////   class to  create the tree and insert the data /////////////////////////
+class Binarytree{
+	public:
+		treenode *main;
+		Binarytree();
+		void insertnode();
+		void getdata();
+		////////////////    BFS traversal //////////
+		void bfs();
+		
+		//////////////    DFS traversals ////////////
+		void inorder(treenode *main );
+		void PostOrder(treenode *main );
+		void PreOrder(treenode *main );
+		
+		//define the stack public 
+		createstack *stackobj = new createstack();
+		
+		treenode *currentnode = new treenode(); 
+};
+
+Binarytree::Binarytree(){
+	//create the root node in the binary tree and 
+	main = new treenode();
+	main->data = NULL;
+	main->left = NULL;
+	main->right = NULL;
+	
+	//	currentnode = main;
+	//push it into the stack 
+	stackobj->push(main);
+	currentnode= stackobj->first;
+
+	
+}
+
+void Binarytree::insertnode(){
+	int x;
+  while (stackobj->first != NULL)	{
+  	cout<<"enter the value to insert at left to thee  :"<<stackobj->first->data<<":::::";
+  	cin>>x;
+  	if (x != -1){
+  		treenode *temp = new treenode();
+		temp->data = x;
+		currentnode->left = temp;
+		stackobj->push(temp);
+	  }
+	  
+	  cout<<"enter the value to insert at right to thee  :"<<stackobj->first->data<<":::::";
+	  cin>>x;
+	  if(x != -1){
+	  	treenode *temp = new treenode();
+	  	temp->data = x;
+	  	currentnode->right = temp;
+	  	stackobj->push(temp);	
+	  }
+  		stackobj->pop();
+  		currentnode= stackobj->first;
+  	
+}
+}
+
+void Binarytree::getdata(){
+	treenode *temp = new treenode();
+	temp = main;
+	cout<<"temp->left->data"<<temp->left->data<<endl;
+}
+
+void Binarytree::bfs(){
+	treenode *temp = main;
+	createstack *stackobj2 = new createstack();
+	stackobj2->push(temp);
+	
+	treenode *currentnode2 = new treenode(); 
+	currentnode2= stackobj2->first;
+	while(currentnode2){
+		cout<<currentnode2->data << " ";
+		if(currentnode2->left){
+			stackobj2->push(currentnode2->left);
+		}
+		if(currentnode2->right){
+			stackobj2->push(currentnode2->right);
+		}
+		stackobj2->pop();
+		currentnode2=stackobj2->first;	
+	}
+}
+	
+void Binarytree::inorder(treenode *main ){
+	//treenode *temp = main;
+	if(main){
+		inorder(main->left);
+		cout<<main->data << " ";
+		inorder(main->right);
+	}
+}
+
+
+void Binarytree::PreOrder(treenode *main ){
+	//treenode *temp = main;
+	if(main){
+		cout<<main->data << " ";
+		inorder(main->left);
+		inorder(main->right);
+		
+	}
+}
+
+void Binarytree::PostOrder(treenode *main ){
+	//treenode *temp = main;
+	if(main){
+		inorder(main->left);
+		inorder(main->right);
+		
+		cout<<main->data << " ";
+	}
+}
+
+
+
+main(){
+	cout<<"main function working fine "<<endl ; 
+	Binarytree *obj = new Binarytree();
+	obj->insertnode();
+	
+	cout<<"bfs is ";   obj->bfs();   cout<<endl;
+	
+	cout<<"inorder is ";  obj->inorder(obj->main);   cout<<endl;
+	
+	cout<<"postorder is ";	obj->PostOrder(obj->main );  cout<<endl;
+	
+	cout<<"preorder is ";	obj->PreOrder(obj->main);  cout<<endl;
+	//obj->getdata();
+}
